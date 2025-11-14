@@ -1,30 +1,28 @@
 <?php
-// app/Providers/AuthServiceProvider.php
 
-namespace App\Providers;
+namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
-use App\Models\Demplot;
-use App\Policies\DemplotPolicy;
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
+use Illuminate\Http\Request;
 
-class AuthServiceProvider extends ServiceProvider
+class TrustProxies extends Middleware
 {
     /**
-     * The model to policy mappings for the application.
+     * The trusted proxies for this application.
      *
-     * @var array<class-string, class-string>
+     * @var array<int, string>|string|null
      */
-    protected $policies = [
-        Demplot::class => DemplotPolicy::class,
-        // Tambahkan policy lainnya di sini...
-    ];
+    protected $proxies = '*';
 
     /**
-     * Register any authentication / authorization services.
+     * The headers that should be used to detect proxies.
+     *
+     * @var int
      */
-    public function boot(): void
-    {
-        $this->registerPolicies();
-    }
+    protected $headers =
+        Request::HEADER_X_FORWARDED_FOR |
+        Request::HEADER_X_FORWARDED_HOST |
+        Request::HEADER_X_FORWARDED_PORT |
+        Request::HEADER_X_FORWARDED_PROTO |
+        Request::HEADER_X_FORWARDED_AWS_ELB;
 }
