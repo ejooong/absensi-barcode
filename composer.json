@@ -5,9 +5,12 @@
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
-    "require": {
+"require": {
         "php": "^8.2",
         "ext-imagick": "*",
+        "ext-gd": "*",
+        "ext-mysqli": "*",
+        "ext-pdo": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "khanamiryan/qrcode-detector-decoder": "^2.0",
         "laravel/framework": "^12.0",
