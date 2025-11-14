@@ -1,0 +1,27 @@
+[phases.setup]
+cmds = [
+    "apt-get update",
+    "apt-get install -y libmagickwand-dev",
+    "pecl install imagick",
+    "docker-php-ext-enable imagick"
+]
+
+[phases.install]
+cmds = [
+    "composer install --no-dev --optimize-autoloader",
+    "php artisan key:generate --force",
+    "npm install && npm run build"
+]
+
+[phases.build]
+cmds = [
+    "php artisan config:cache",
+    "php artisan route:cache",
+    "php artisan view:cache"
+]
+
+[start]
+cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"
+
+[environment]
+NODE_VERSION = "18"
