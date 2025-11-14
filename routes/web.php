@@ -12,8 +12,9 @@ use App\Http\Controllers\MataKuliahController;
 // Public routes - Bisa diakses tanpa login
 Route::get('/', [AbsensiController::class, 'scannerPublic'])->name('home'); // Default langsung ke scanner public
 
-// Scanner untuk peserta (tanpa login) - TAMBAHKAN ROUTE NAME 'scanner'
-Route::get('/scanner', [AbsensiController::class, 'scannerPublic'])->name('scanner'); // INI YANG DIPERBAIKI
+// Scanner untuk peserta (tanpa login) - PERBAIKI INI
+Route::get('/scanner', [AbsensiController::class, 'scannerPublic'])->name('scanner.public'); // Untuk login page
+Route::get('/scanner', [AbsensiController::class, 'scannerPublic'])->name('scanner'); // Untuk scanner page
 Route::post('/absensi/process', [AbsensiController::class, 'processAbsensi'])->name('absensi.process');
 
 // Login routes

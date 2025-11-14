@@ -665,13 +665,7 @@
             </div>
         </div>
 
-        <!-- Navigation -->
-        <div class="navigation">
-            <a href="{{ url('/login') }}" class="nav-link">
-                <i class="fas fa-arrow-left nav-icon"></i>Login sebagai petugas
-            </a>
-        </div>
-    </div>
+
 
     <!-- Modal Success -->
     <div id="success-modal" class="modal-overlay">

@@ -37,7 +37,7 @@
                             <input 
                                 type="text" 
                                 id="scanner-url" 
-                                 value="{{ route('scanner.public') }}" 
+                                 value="{{ route('scanner') }}" 
                                 readonly
                                 class="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg bg-gray-50 text-sm"
                             >
@@ -248,7 +248,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
-    const scannerUrl = "{{ route('scanner.public') }}";    
+    const scannerUrl = "{{ route('scanner') }}";    
     // Copy scanner URL
     function copyScannerUrl() {
         navigator.clipboard.writeText(scannerUrl).then(() => {
