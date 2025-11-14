@@ -5,6 +5,8 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Demplot;
+use App\Policies\DemplotPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -14,18 +16,15 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Demplot::class => DemplotPolicy::class,
+        // Tambahkan policy lainnya di sini...
     ];
 
     /**
      * Register any authentication / authorization services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerPolicies();
-
-        //
     }
 }

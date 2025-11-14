@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use SimpleSoftwareIO\QrCode\Generator;
+use Illuminate\Support\Facades\URL;
+use App\Models\Produksi;
+use App\Observers\ProduksiObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Produksi::observe(ProduksiObserver::class);
+
+        // Force HTTPS in production (Railway)
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }
