@@ -102,10 +102,10 @@
                     <i class="fas fa-sync-alt"></i>
                 </button>
 
-                <select id="camera-select" onchange="changeCamera(this.value)">
+                <!-- <select id="camera-select" onchange="changeCamera(this.value)">
                     <option value="">Pilih Kamera</option>
                 </select>
-            </div>
+            </div> -->
 
             <div class="tips">
                 Tips: Arahkan kamera ke QR Code, scanner akan bekerja otomatis
