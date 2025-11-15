@@ -14,6 +14,9 @@ Route::get('/', [AbsensiController::class, 'scannerPublic'])->name('home');
 
 // Scanner untuk peserta (tanpa login)
 Route::get('/scanner', [AbsensiController::class, 'scannerPublic'])->name('scanner.public');
+Route::get('/share-scanner', function () {
+    return view('auth.share');
+})->name('share.scanner'); // Tambahkan route ini
 Route::post('/absensi/process', [AbsensiController::class, 'processAbsensi'])->name('absensi.process');
 
 // Login routes

@@ -15,187 +15,96 @@
 </div>
 
 <div class="min-h-screen flex items-center justify-center relative z-10">
-    <div class="max-w-4xl w-full mx-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Share Scanner Section -->
-            <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
-                <!-- Header -->
-                <div class="text-center mb-8">
-                    <div class="mx-auto w-22 h-22 bg-white-100 rounded-full flex items-center justify-center mb-4">
-                       <img src="{{ asset('images/abn.png') }}" 
-                         alt="ABSENSI BARCODE" 
-                         style="height: 150px; width: 150px;"
-                         class="mr-1 object-contain">
-                    </div>
-                    <h1 class="text-2xl font-bold text-gray-800">SCANNER KEHADIRAN</h1>
-                    <p class="text-gray-600 mt-2">Bagikan ke Peserta</p>
-                </div>
+    <div class="max-w-md w-full mx-4">
+        <!-- Login Section -->
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="mx-auto w-22 h-22 bg-white-100 rounded-full flex items-center justify-center mb-4">
+                   <img src="{{ asset('images/nasdem.png') }}" 
+                     alt="ABSENSI BARCODE" 
+                     style="height: 75px; width: 100px;"
+                     class="mr-1 object-contain">
 
-                <!-- Scanner Info -->
-                <div class="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-                    <p class="text-green-700 text-sm text-center">
-                        <i class="fas fa-info-circle mr-2"></i>
-                        Peserta dapat scan QR code tanpa perlu login
-                    </p>
-                </div>
-
-                <!-- Share Options -->
-                <div class="space-y-4">
-                    <!-- Scanner URL -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-link mr-2"></i>Link Scanner
-                        </label>
-                        <div class="flex">
-                            <input 
-                                type="text" 
-                                id="scanner-url" 
-                                value="{{ route('scanner.public') }}" 
-                                readonly
-                                class="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg bg-gray-50 text-sm"
-                            >
-                            <button 
-                                onclick="copyScannerUrl()"
-                                class="bg-blue-600 text-white px-4 py-3 rounded-r-lg hover:bg-blue-700 transition-colors"
-                            >
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Share Buttons -->
-                    <div class="grid grid-cols-2 gap-3">
-                        <!-- WhatsApp -->
-                        <button 
-                            onclick="shareViaWhatsApp()"
-                            class="bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-all duration-200 flex items-center justify-center"
-                        >
-                            <i class="fab fa-whatsapp mr-2"></i>
-                            WhatsApp
-                        </button>
-
-
-
-                        <!-- QR Code -->
-                        <button 
-                            onclick="showQRCode()"
-                            class="bg-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-all duration-200 flex items-center justify-center"
-                        >
-                            <i class="fas fa-qrcode mr-2"></i>
-                            QR Code
-                        </button>
-                    </div>
-
-                    <!-- Quick Message -->
-                    <div class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-share-alt mr-2"></i>Pesan Cepat
-                        </label>
-                        <div class="flex space-x-2">
-                            <button 
-                                onclick="shareWithMessage('default')"
-                                class="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-sm hover:bg-blue-200 transition-colors"
-                            >
-                                📱 Scan absensi di sini
-                            </button>
-                            <button 
-                                onclick="shareWithMessage('urgent')"
-                                class="flex-1 bg-orange-100 text-orange-700 py-2 px-3 rounded-lg text-sm hover:bg-orange-200 transition-colors"
-                            >
-                                ⏰ Segera absen!
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Instructions -->
-                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <h4 class="font-semibold text-blue-800 mb-2">
-                        <i class="fas fa-lightbulb mr-2"></i>Cara Berbagi:
-                    </h4>
-                    <ul class="text-sm text-blue-700 space-y-1">
-                        <li>• Klik tombol media sosial untuk berbagi langsung</li>
-                        <li>• Salin link untuk dibagikan manual</li>
-                        <li>• Gunakan QR code untuk display di kelas</li>
-                        <li>• Peserta tidak perlu login untuk scan</li>
-                    </ul>
-                </div>
+                   <img src="{{ asset('images/abn.png') }}" 
+                     alt="ABSENSI BARCODE" 
+                     style="height: 100px; width: 100px;"
+                     class="mr-1 object-contain">
+                                     </div>
+                <h1 class="text-2xl font-bold text-gray-800"></h1>
+                
             </div>
 
-            <!-- Login Section -->
-            <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
-                <!-- Header -->
-                <div class="text-center mb-8">
-                    <div class="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-user-shield text-blue-600 text-2xl"></i>
-                    </div>
-                    <h1 class="text-2xl font-bold text-gray-800">LOGIN PETUGAS</h1>
-                    <p class="text-gray-600 mt-2">Akses panel admin</p>
+            <!-- Form Login -->
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                
+                <!-- Username Field -->
+                <div class="mb-6">
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user mr-2"></i>Username
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        value="{{ old('username') }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('username') border-red-500 @enderror"
+                        placeholder="Username"
+                        required
+                        autofocus
+                    >
+                    @error('username')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <!-- Form Login -->
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-                    
-                    <!-- Username Field -->
-                    <div class="mb-6">
-                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-user mr-2"></i>Username
-                        </label>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            value="{{ old('username') }}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('username') border-red-500 @enderror"
-                            placeholder="Masukkan username"
-                            required
-                            autofocus
-                        >
-                        @error('username')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Password Field -->
-                    <div class="mb-6">
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-lock mr-2"></i>Password
-                        </label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('password') border-red-500 @enderror"
-                            placeholder="Masukkan password"
-                            required
-                        >
-                        @error('password')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Error Messages -->
-                    @if($errors->any())
-                        <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <p class="text-red-600 text-sm">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                {{ $errors->first() }}
-                            </p>
-                        </div>
-                    @endif
-
-                    <!-- Login Button -->
-                    <button 
-                        type="submit" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:-translate-y-0.5"
+                <!-- Password Field -->
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock mr-2"></i>Password
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('password') border-red-500 @enderror"
+                        placeholder="Password"
+                        required
                     >
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        LOGIN PETUGAS
-                    </button>
-                </form>
+                    @error('password')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
+                <!-- Error Messages -->
+                @if($errors->any())
+                    <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-red-600 text-sm">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            {{ $errors->first() }}
+                        </p>
+                    </div>
+                @endif
 
+                <!-- Login Button -->
+                <button 
+                    type="submit" 
+                    class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:-translate-y-0.5"
+                >
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    LOGIN
+                </button>
+            </form>
+
+            <!-- Link ke Share Page -->
+            <div class="mt-6 text-center">
+                <p class="text-gray-600 text-sm">
+                    Ingin berbagi scanner? 
+                    <a href="{{ route('share.scanner') }}" class="text-blue-600 hover:text-blue-700 font-semibold">
+                        Klik di sini
+                    </a>
+                </p>
             </div>
         </div>
 
@@ -204,23 +113,6 @@
             <p class="text-white text-sm drop-shadow-lg">
                 &copy; 2025 ABN Absensi Barcode System
             </p>
-        </div>
-    </div>
-</div>
-
-<!-- QR Code Modal -->
-<div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-2xl p-8 max-w-sm mx-4">
-        <div class="text-center">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">QR Code Scanner</h3>
-            <div id="qrcode" class="mb-4 mx-auto flex justify-center items-center"></div>
-            <p class="text-sm text-gray-600 mb-4">Scan QR code ini untuk mengakses scanner absensi</p>
-            <button 
-                onclick="closeQRModal()"
-                class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors"
-            >
-                Tutup
-            </button>
         </div>
     </div>
 </div>
@@ -368,111 +260,4 @@
         filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     }
 </style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-    const scannerUrl = "{{ route('scanner.public') }}";
-    
-    // Copy scanner URL
-    function copyScannerUrl() {
-        navigator.clipboard.writeText(scannerUrl).then(() => {
-            showToast('Link berhasil disalin!', 'success');
-        }).catch(() => {
-            // Fallback untuk browser lama
-            const input = document.getElementById('scanner-url');
-            input.select();
-            document.execCommand('copy');
-            showToast('Link berhasil disalin!', 'success');
-        });
-    }
-    
-    // Share via WhatsApp
-    function shareViaWhatsApp() {
-        const message = `📱 Gunakan scanner absensi berikut:\n${scannerUrl}\n\n*Absensi Barcode System*`;
-        const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
-    }
-    
-
-    // Share with custom message
-    function shareWithMessage(type) {
-        const messages = {
-            default: `📱 *SCANNER ABSENSI*\n\nGunakan link berikut untuk absensi:\n${scannerUrl}\n\n_*Absensi Barcode System*_`,
-            urgent: `🚨 *SEGERA ABSEN!*\n\nWaktu absensi hampir habis! Gunakan link:\n${scannerUrl}\n\n_*Segera lakukan absensi!*_`
-        };
-        
-        const message = messages[type] || messages.default;
-        const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
-    }
-    
-    // Show QR Code
-function showQRCode() {
-    const modal = document.getElementById('qr-modal');
-    const qrcodeElement = document.getElementById('qrcode');
-    
-    // Clear previous QR code
-    qrcodeElement.innerHTML = '';
-    
-    try {
-        // Menggunakan qrcodejs library
-        new QRCode(qrcodeElement, {
-            text: scannerUrl,
-            width: 200,
-            height: 200,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
-    } catch (error) {
-        console.error('QR Code error:', error);
-        showFallbackQR(qrcodeElement);
-    }
-    
-    modal.classList.remove('hidden');
-}
-    
-    // Close QR Modal
-    function closeQRModal() {
-        document.getElementById('qr-modal').classList.add('hidden');
-    }
-    
-    // Toast notification
-    function showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 p-4 rounded-lg text-white ${
-            type === 'success' ? 'bg-green-500' : 'bg-blue-500'
-        } z-50 transform transition-transform duration-300 translate-x-full`;
-        toast.textContent = message;
-        
-        document.body.appendChild(toast);
-        
-        // Animate in
-        setTimeout(() => {
-            toast.classList.remove('translate-x-full');
-        }, 100);
-        
-        // Animate out and remove
-        setTimeout(() => {
-            toast.classList.add('translate-x-full');
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 300);
-        }, 3000);
-    }
-    
-    // Close modal when clicking outside
-    document.getElementById('qr-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'qr-modal') {
-            closeQRModal();
-        }
-    });
-    
-    // Close modal with Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeQRModal();
-        }
-    });
-</script>
 @endsection
