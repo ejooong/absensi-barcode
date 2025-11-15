@@ -1,9 +1,6 @@
 <!-- resources/views/peserta/edit.blade.php -->
 @extends('layouts.admin')
 
-@section('title', 'Edit Peserta')
-@section('subtitle', 'Update data peserta')
-
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="bg-white rounded-xl shadow-lg overflow-hidden">

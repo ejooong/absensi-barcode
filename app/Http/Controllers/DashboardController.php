@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Peserta;
 use App\Models\Absensi;
-use App\Models\JadwalSesi;
-use App\Models\MataKuliah;
+use App\Models\Kegiatan; // Ganti dari JadwalSesi
+use App\Models\Program; // Ganti dari MataKuliah
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -23,23 +23,23 @@ class DashboardController extends Controller
         // Hitung absensi hari ini
         $absensiHariIni = Absensi::whereDate('waktu_absen', $today)->count();
         
-        // Hitung jadwal aktif (sedang berlangsung)
-        $jadwalAktif = JadwalSesi::where('waktu_mulai', '<=', $now)
+        // Hitung kegiatan aktif (sedang berlangsung)
+        $kegiatanAktif = Kegiatan::where('waktu_mulai', '<=', $now)
             ->where('waktu_akhir', '>=', $now)
             ->count();
             
-        // Total mata kuliah
-        $totalMataKuliah = MataKuliah::count();
+        // Total program
+        $totalProgram = Program::count();
         
         // Absensi terbaru hari ini
-        $recentAbsensi = Absensi::with(['peserta', 'jadwalSesi.mataKuliah'])
+        $recentAbsensi = Absensi::with(['peserta', 'kegiatan.program']) // Ganti dari jadwalSesi.mataKuliah
             ->whereDate('waktu_absen', $today)
             ->orderBy('waktu_absen', 'desc')
             ->limit(5)
             ->get();
             
-        // Jadwal hari ini
-        $jadwalHariIni = JadwalSesi::with('mataKuliah')
+        // Kegiatan hari ini
+        $kegiatanHariIni = Kegiatan::with('program') // Ganti dari mataKuliah
             ->whereDate('waktu_mulai', $today)
             ->orderBy('waktu_mulai')
             ->get();
@@ -52,10 +52,10 @@ class DashboardController extends Controller
         return view('dashboard.index', compact(
             'totalPeserta',
             'absensiHariIni', 
-            'jadwalAktif',
-            'totalMataKuliah',
+            'kegiatanAktif', // Ganti dari jadwalAktif
+            'totalProgram', // Ganti dari totalMataKuliah
             'recentAbsensi',
-            'jadwalHariIni',
+            'kegiatanHariIni', // Ganti dari jadwalHariIni
             'absensiBulanIni'
         ));
     }

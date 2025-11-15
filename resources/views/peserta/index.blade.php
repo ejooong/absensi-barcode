@@ -1,8 +1,6 @@
 <!-- resources/views/peserta/index.blade.php -->
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Peserta')
-@section('subtitle', 'Kelola data peserta dan barcode')
 
 @section('content')
 <div class="mb-6 flex justify-between items-center">

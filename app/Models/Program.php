@@ -1,19 +1,18 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MataKuliah extends Model
+class Program extends Model
 {
     use HasFactory;
 
-    protected $table = 'mata_kuliah'; // Tambahkan ini
+    protected $table = 'program';
     protected $fillable = ['nama_materi', 'kode_materi'];
 
-    public function jadwalSesi()
+    public function kegiatan()
     {
-        return $this->hasMany(JadwalSesi::class);
+        return $this->hasMany(Kegiatan::class, 'program_id');
     }
 }

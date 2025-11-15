@@ -6,15 +6,14 @@ use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
-use App\Http\Controllers\JadwalController;
-use App\Http\Controllers\MataKuliahController;
+use App\Http\Controllers\KegiatanController; // Ganti dari JadwalController
+use App\Http\Controllers\ProgramController; // Ganti dari MataKuliahController
 
 // Public routes - Bisa diakses tanpa login
-Route::get('/', [AbsensiController::class, 'scannerPublic'])->name('home'); // Default langsung ke scanner public
+Route::get('/', [AbsensiController::class, 'scannerPublic'])->name('home');
 
-// Scanner untuk peserta (tanpa login) - PERBAIKI INI
-Route::get('/scanner', [AbsensiController::class, 'scannerPublic'])->name('scanner.public'); // Untuk login page
-Route::get('/scanner', [AbsensiController::class, 'scannerPublic'])->name('scanner'); // Untuk scanner page
+// Scanner untuk peserta (tanpa login)
+Route::get('/scanner', [AbsensiController::class, 'scannerPublic'])->name('scanner.public');
 Route::post('/absensi/process', [AbsensiController::class, 'processAbsensi'])->name('absensi.process');
 
 // Login routes
@@ -38,12 +37,12 @@ Route::middleware(['auth:petugas'])->group(function () {
     Route::get('/peserta/{peserta}/download-qrcode', [PesertaController::class, 'downloadQrCode'])
          ->name('peserta.download-qrcode');
 
-    // Mata Kuliah routes
-    Route::resource('mata-kuliah', MataKuliahController::class);
+    // Program routes (GANTI dari Mata Kuliah)
+    Route::resource('program', ProgramController::class);
 
-    // Jadwal routes
-    Route::resource('jadwal', JadwalController::class);
-    Route::get('/jadwal/aktif', [JadwalController::class, 'getJadwalAktif'])->name('jadwal.getJadwalAktif');
+    // Kegiatan routes (GANTI dari Jadwal)
+    Route::resource('kegiatan', KegiatanController::class);
+    Route::get('/kegiatan/aktif', [KegiatanController::class, 'getKegiatanAktif'])->name('kegiatan.getKegiatanAktif');
 
     // Absensi routes
     Route::get('/absensi/riwayat', [AbsensiController::class, 'riwayat'])->name('absensi.riwayat');

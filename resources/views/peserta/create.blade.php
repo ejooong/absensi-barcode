@@ -1,9 +1,6 @@
 <!-- resources/views/peserta/create.blade.php -->
 @extends('layouts.admin')
 
-@section('title', 'Tambah Peserta')
-@section('subtitle', 'Tambah peserta baru ke sistem')
-
 @section('content')
 <div class="max-w-2xl mx-auto">
     <div class="bg-white rounded-xl shadow-lg p-6">
@@ -21,7 +18,7 @@
                            name="nama" 
                            value="{{ old('nama') }}"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('nama') border-red-500 @enderror"
-                           placeholder="Masukkan nama lengkap"
+                           placeholder="Masukan nama lengkap"
                            required>
                     @error('nama')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

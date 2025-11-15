@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Peserta;
-use App\Models\JadwalSesi;
+use App\Models\Kegiatan; // Ganti dari JadwalSesi
+use App\Models\Program; // Ganti dari MataKuliah
 use App\Models\Absensi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -14,27 +15,27 @@ class AbsensiController extends Controller
     // Scanner untuk public (tanpa login)
     public function scannerPublic()
     {
-        // Cari jadwal yang aktif sekarang
+        // Cari kegiatan yang aktif sekarang
         $now = Carbon::now();
-        $jadwalAktif = JadwalSesi::where('waktu_mulai', '<=', $now)
+        $kegiatanAktif = Kegiatan::where('waktu_mulai', '<=', $now)
             ->where('waktu_akhir', '>=', $now)
-            ->with('mataKuliah')
+            ->with('program') // Ganti dari mataKuliah
             ->first();
 
-        return view('scanner-public', compact('jadwalAktif'));
+        return view('scanner-public', compact('kegiatanAktif'));
     }
 
     // Scanner untuk admin (dengan login)
     public function scanner()
     {
-        // Cari jadwal yang aktif sekarang
+        // Cari kegiatan yang aktif sekarang
         $now = Carbon::now();
-        $jadwalAktif = JadwalSesi::where('waktu_mulai', '<=', $now)
+        $kegiatanAktif = Kegiatan::where('waktu_mulai', '<=', $now)
             ->where('waktu_akhir', '>=', $now)
-            ->with('mataKuliah')
+            ->with('program') // Ganti dari mataKuliah
             ->first();
 
-        return view('absensi.scanner', compact('jadwalAktif'));
+        return view('absensi.scanner', compact('kegiatanAktif'));
     }
 
     public function processAbsensi(Request $request)
@@ -54,36 +55,36 @@ class AbsensiController extends Controller
                 ], 404);
             }
 
-            // Cari jadwal sesi yang aktif sekarang
+            // Cari kegiatan yang aktif sekarang
             $now = Carbon::now();
-            $jadwalSesi = JadwalSesi::where('waktu_mulai', '<=', $now)
+            $kegiatan = Kegiatan::where('waktu_mulai', '<=', $now)
                 ->where('waktu_akhir', '>=', $now)
-                ->with('mataKuliah')
+                ->with('program') // Ganti dari mataKuliah
                 ->first();
 
-            if (!$jadwalSesi) {
+            if (!$kegiatan) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Tidak ada jadwal sesi yang aktif saat ini!'
+                    'message' => 'Tidak ada kegiatan yang aktif saat ini!'
                 ], 400);
             }
 
             // Cek apakah sudah absen - SEKARANG AMBIL DATA ABSENSI YANG SUDAH ADA
             $absensiTerdaftar = Absensi::where('peserta_id', $peserta->id)
-                ->where('jadwal_sesi_id', $jadwalSesi->id)
+                ->where('kegiatan_id', $kegiatan->id) // Ganti dari jadwal_sesi_id
                 ->first();
 
             if ($absensiTerdaftar) {
                 // Kembalikan data absensi yang sudah ada
                 return response()->json([
                     'success' => false,
-                    'message' => 'Anda sudah absen untuk sesi ini!',
+                    'message' => 'Anda sudah absen untuk kegiatan ini!',
                     'data' => [
                         'nama' => $peserta->nama,
                         'jabatan' => $peserta->jabatan,
                         'kelas' => $peserta->kelas,
-                        'sesi' => $jadwalSesi->materi,
-                        'mata_kuliah' => $jadwalSesi->mataKuliah->nama_materi,
+                        'sesi' => $kegiatan->materi,
+                        'program' => $kegiatan->program->nama_materi, // Ganti dari mata_kuliah
                         'status' => $absensiTerdaftar->status,
                         'waktu' => $absensiTerdaftar->waktu_absen->format('H:i:s'),
                         'tanggal' => $absensiTerdaftar->waktu_absen->format('d M Y')
@@ -94,7 +95,7 @@ class AbsensiController extends Controller
             // Tentukan status (terlambat atau hadir)
             $status = 'hadir';
             $toleransiMenit = 15; // Toleransi keterlambatan 15 menit
-            $waktuMulai = Carbon::parse($jadwalSesi->waktu_mulai);
+            $waktuMulai = Carbon::parse($kegiatan->waktu_mulai);
             
             if ($now->diffInMinutes($waktuMulai, false) < -$toleransiMenit) {
                 $status = 'terlambat';
@@ -103,7 +104,7 @@ class AbsensiController extends Controller
             // Simpan absensi
             $absensi = Absensi::create([
                 'peserta_id' => $peserta->id,
-                'jadwal_sesi_id' => $jadwalSesi->id,
+                'kegiatan_id' => $kegiatan->id, // Ganti dari jadwal_sesi_id
                 'waktu_absen' => $now,
                 'status' => $status
             ]);
@@ -115,8 +116,8 @@ class AbsensiController extends Controller
                     'nama' => $peserta->nama,
                     'jabatan' => $peserta->jabatan,
                     'kelas' => $peserta->kelas,
-                    'sesi' => $jadwalSesi->materi,
-                    'mata_kuliah' => $jadwalSesi->mataKuliah->nama_materi,
+                    'sesi' => $kegiatan->materi,
+                    'program' => $kegiatan->program->nama_materi, // Ganti dari mata_kuliah
                     'status' => $status,
                     'waktu' => $now->format('H:i:s'),
                     'tanggal' => $now->format('d M Y')
@@ -133,7 +134,7 @@ class AbsensiController extends Controller
 
     public function riwayat()
     {
-        $absensi = Absensi::with(['peserta', 'jadwalSesi.mataKuliah'])
+        $absensi = Absensi::with(['peserta', 'kegiatan.program']) // Ganti dari jadwalSesi.mataKuliah
             ->latest()
             ->paginate(20);
 
@@ -145,7 +146,7 @@ class AbsensiController extends Controller
 
     public function filterRiwayat(Request $request)
     {
-        $query = Absensi::with(['peserta', 'jadwalSesi.mataKuliah']);
+        $query = Absensi::with(['peserta', 'kegiatan.program']); // Ganti dari jadwalSesi.mataKuliah
 
         // Filter by date
         if ($request->has('tanggal') && $request->tanggal) {
@@ -176,17 +177,17 @@ class AbsensiController extends Controller
         return view('absensi.riwayat', compact('absensi', 'kelasList'));
     }
 
-    // API untuk mendapatkan jadwal aktif
-    public function getJadwalAktif()
+    // API untuk mendapatkan kegiatan aktif
+    public function getKegiatanAktif()
     {
         $now = Carbon::now();
-        $jadwalAktif = JadwalSesi::where('waktu_mulai', '<=', $now)
+        $kegiatanAktif = Kegiatan::where('waktu_mulai', '<=', $now)
             ->where('waktu_akhir', '>=', $now)
-            ->with('mataKuliah')
+            ->with('program') // Ganti dari mataKuliah
             ->first();
 
         return response()->json([
-            'jadwal_aktif' => $jadwalAktif,
+            'kegiatan_aktif' => $kegiatanAktif,
             'waktu_sekarang' => $now->format('Y-m-d H:i:s')
         ]);
     }
@@ -203,32 +204,32 @@ class AbsensiController extends Controller
         }
 
         $now = Carbon::now();
-        $jadwalSesi = JadwalSesi::where('waktu_mulai', '<=', $now)
+        $kegiatan = Kegiatan::where('waktu_mulai', '<=', $now)
             ->where('waktu_akhir', '>=', $now)
-            ->with('mataKuliah')
+            ->with('program') // Ganti dari mataKuliah
             ->first();
 
-        if (!$jadwalSesi) {
+        if (!$kegiatan) {
             return response()->json([
-                'success' => false, 'message' => 'Tidak ada jadwal sesi yang aktif saat ini!'
+                'success' => false, 'message' => 'Tidak ada kegiatan yang aktif saat ini!'
             ], 400);
         }
 
         // Cek apakah sudah absen - AMBIL DATA YANG SUDAH ADA
         $absensiTerdaftar = Absensi::where('peserta_id', $peserta->id)
-            ->where('jadwal_sesi_id', $jadwalSesi->id)
+            ->where('kegiatan_id', $kegiatan->id) // Ganti dari jadwal_sesi_id
             ->first();
 
         if ($absensiTerdaftar) {
             return response()->json([
                 'success' => false, 
-                'message' => 'Anda sudah absen untuk sesi ini!',
+                'message' => 'Anda sudah absen untuk kegiatan ini!',
                 'data' => [
                     'nama' => $peserta->nama,
                     'jabatan' => $peserta->jabatan,
                     'kelas' => $peserta->kelas,
-                    'sesi' => $jadwalSesi->materi,
-                    'mata_kuliah' => $jadwalSesi->mataKuliah->nama_materi,
+                    'sesi' => $kegiatan->materi,
+                    'program' => $kegiatan->program->nama_materi, // Ganti dari mata_kuliah
                     'status' => $absensiTerdaftar->status,
                     'waktu' => $absensiTerdaftar->waktu_absen->format('H:i:s'),
                     'tanggal' => $absensiTerdaftar->waktu_absen->format('d M Y')
@@ -238,14 +239,14 @@ class AbsensiController extends Controller
 
         $status = 'hadir';
         $toleransiMenit = 15;
-        $waktuMulai = Carbon::parse($jadwalSesi->waktu_mulai);
+        $waktuMulai = Carbon::parse($kegiatan->waktu_mulai);
         if ($now->diffInMinutes($waktuMulai, false) < -$toleransiMenit) {
             $status = 'terlambat';
         }
 
         $absensi = Absensi::create([
             'peserta_id' => $peserta->id,
-            'jadwal_sesi_id' => $jadwalSesi->id,
+            'kegiatan_id' => $kegiatan->id, // Ganti dari jadwal_sesi_id
             'waktu_absen' => $now,
             'status' => $status
         ]);
@@ -257,8 +258,8 @@ class AbsensiController extends Controller
                 'nama' => $peserta->nama,
                 'jabatan' => $peserta->jabatan,
                 'kelas' => $peserta->kelas,
-                'sesi' => $jadwalSesi->materi,
-                'mata_kuliah' => $jadwalSesi->mataKuliah->nama_materi,
+                'sesi' => $kegiatan->materi,
+                'program' => $kegiatan->program->nama_materi, // Ganti dari mata_kuliah
                 'status' => $status,
                 'waktu' => $now->format('H:i:s'),
                 'tanggal' => $now->format('d M Y')

@@ -1,8 +1,7 @@
 <!-- resources/views/dashboard/index.blade.php -->
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
-@section('subtitle', 'Overview sistem absensi barcode')
+
 
 @section('content')
 @php

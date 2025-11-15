@@ -23,10 +23,9 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
 
     public function collection()
     {
-        $query = Absensi::with(['peserta', 'jadwalSesi.mataKuliah'])
+        // PERBAIKAN: Update relasi ke model yang baru
+        $query = Absensi::with(['peserta', 'kegiatan.program'])
             ->whereDate('waktu_absen', $this->tanggal);
-
-        // HAPUS FILTER KELOMPOK
 
         if ($this->kelas) {
             $query->whereHas('peserta', function($q) {
@@ -43,7 +42,7 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
             'Nama Peserta',
             'Jabatan',
             'Kelas', 
-            'Mata Kuliah',
+            'Program', // PERBAIKAN: Ganti dari 'Mata Kuliah'
             'Sesi',
             'Materi',
             'Waktu Absen',
@@ -54,13 +53,14 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
 
     public function map($absensi): array
     {
+        // PERBAIKAN: Update mapping ke relasi yang baru
         return [
             $absensi->peserta->nama,
             $absensi->peserta->jabatan ?? '-',
-            $absensi->peserta->kelas ?? '-', // HAPUS KELOMPOK
-            $absensi->jadwalSesi->mataKuliah->nama_materi,
-            'Sesi ' . $absensi->jadwalSesi->sesi_ke,
-            $absensi->jadwalSesi->materi,
+            $absensi->peserta->kelas ?? '-',
+            $absensi->kegiatan->program->nama_materi, // PERBAIKAN: Ganti relasi
+            'Sesi ' . $absensi->kegiatan->sesi_ke, // PERBAIKAN: Ganti relasi
+            $absensi->kegiatan->materi, // PERBAIKAN: Ganti relasi
             $absensi->waktu_absen->format('H:i:s'),
             $absensi->status,
             $absensi->waktu_absen->format('d/m/Y')

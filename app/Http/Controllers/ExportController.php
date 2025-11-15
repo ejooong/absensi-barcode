@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Absensi;
 use App\Models\Peserta;
+use App\Models\Kegiatan;
+use App\Models\Program;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AbsensiExport;
@@ -18,7 +20,7 @@ class ExportController extends Controller
     public function exportAbsensiExcel(Request $request)
     {
         $tanggal = $request->get('tanggal', Carbon::today()->format('Y-m-d'));
-        $kelas = $request->get('kelas'); // Hapus kelompok
+        $kelas = $request->get('kelas');
 
         return Excel::download(new AbsensiExport($tanggal, $kelas), 
             'laporan-absensi-' . $tanggal . '.xlsx');
@@ -28,13 +30,12 @@ class ExportController extends Controller
     public function exportAbsensiPDF(Request $request)
     {
         $tanggal = $request->get('tanggal', Carbon::today()->format('Y-m-d'));
-        $kelas = $request->get('kelas'); // Hapus kelompok
+        $kelas = $request->get('kelas');
 
-        // Get data
-        $query = Absensi::with(['peserta', 'jadwalSesi.mataKuliah'])
+        // PERBAIKAN: Update query dengan model dan relasi yang baru
+        $query = Absensi::with(['peserta', 'kegiatan.program'])
             ->whereDate('waktu_absen', $tanggal);
 
-        // HAPUS FILTER KELOMPOK
         if ($kelas) {
             $query->whereHas('peserta', function($q) use ($kelas) {
                 $q->where('kelas', $kelas);
@@ -52,36 +53,46 @@ class ExportController extends Controller
             'totalAbsensi' => $totalAbsensi,
             'totalHadir' => $totalHadir,
             'totalTerlambat' => $totalTerlambat,
-            'kelas' => $kelas // Hapus kelompok dari data
+            'kelas' => $kelas
         ];
 
         $pdf = PDF::loadView('exports.absensi-pdf', $data);
         return $pdf->download('laporan-absensi-' . $tanggal . '.pdf');
     }
 
-    // Export Peserta to Excel
+    // Export Peserta to Excel DENGAN QR CODE (OPTIMIZED)
     public function exportPesertaExcel()
     {
+        // Tingkatkan time limit untuk proses yang berat
+        set_time_limit(600); // 5 menit
+        ini_set('memory_limit', '512M');
+        session(['export_started' => true]);
         return Excel::download(new PesertaExport, 'data-peserta-' . Carbon::now()->format('Y-m-d') . '.xlsx');
     }
 
-    // Export Peserta to PDF dengan Barcode
+    // Export Peserta to PDF dengan Barcode (OPTIMIZED)
     public function exportPesertaPDF()
     {
+        set_time_limit(600);
+        ini_set('memory_limit', '512M');
+        
         $peserta = Peserta::all();
         
-        // Generate QR code base64 untuk PDF
+        // Generate QR code base64 untuk PDF (lebih efisien)
         $pesertaWithQR = $peserta->map(function($item) {
-            // Generate QR Code sebagai base64
-            try {
-                $qrCode = QrCode::format('png')
-                    ->size(100)
-                    ->margin(1)
-                    ->generate($item->barcode_data);
-                
-                $item->qr_code_base64 = 'data:image/png;base64,' . base64_encode($qrCode);
-            } catch (\Exception $e) {
-                // Fallback jika QR Code gagal
+            if (!empty($item->barcode_data)) {
+                try {
+                    // Gunakan size yang lebih kecil untuk PDF
+                    $qrCode = QrCode::format('png')
+                        ->size(80) // Lebih kecil dari sebelumnya
+                        ->margin(0) // Kurangi margin
+                        ->generate($item->barcode_data);
+                    
+                    $item->qr_code_base64 = 'data:image/png;base64,' . base64_encode($qrCode);
+                } catch (\Exception $e) {
+                    $item->qr_code_base64 = null;
+                }
+            } else {
                 $item->qr_code_base64 = null;
             }
             
@@ -95,7 +106,10 @@ class ExportController extends Controller
         ];
 
         $pdf = PDF::loadView('exports.peserta-pdf', $data)
-                  ->setPaper('a4', 'landscape');
+                  ->setPaper('a4', 'landscape')
+                  ->setOption('enable-javascript', false)
+                  ->setOption('images', true)
+                  ->setOption('enable-smart-shrinking', true);
         
         return $pdf->download('data-peserta-' . Carbon::now()->format('Y-m-d') . '.pdf');
     }
@@ -159,10 +173,9 @@ class ExportController extends Controller
     // Show export form
     public function showExportForm()
     {
-        // HAPUS KELOMPOK LIST
         $kelasList = Peserta::distinct()->whereNotNull('kelas')->pluck('kelas');
         
-        return view('exports.form', compact('kelasList')); // Hapus kelompokList
+        return view('exports.form', compact('kelasList'));
     }
 
     // Export Template untuk Import
@@ -170,7 +183,7 @@ class ExportController extends Controller
     {
         // Buat template Excel sederhana
         $templateData = [
-            ['Nama', 'Jabatan', 'Kelas'] // Hapus Kelompok
+            ['Nama', 'Jabatan', 'Kelas']
         ];
         
         $filename = 'template-import-peserta-' . Carbon::now()->format('Y-m-d') . '.xlsx';

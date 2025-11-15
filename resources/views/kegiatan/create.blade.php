@@ -1,33 +1,29 @@
-<!-- resources/views/jadwal/create.blade.php -->
 @extends('layouts.admin')
-
-@section('title', 'Tambah Jadwal')
-@section('subtitle', 'Buat jadwal sesi perkuliahan baru')
 
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="bg-white rounded-xl shadow-lg p-6">
-        <form method="POST" action="{{ route('jadwal.store') }}" id="jadwalForm">
+        <form method="POST" action="{{ route('kegiatan.store') }}" id="kegiatanForm">
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Mata Kuliah -->
+                <!-- Program -->
                 <div class="md:col-span-2">
-                    <label for="mata_kuliah_id" class="block text-sm font-medium text-gray-700 mb-2">
-                        Mata Kuliah *
+                    <label for="program_id" class="block text-sm font-medium text-gray-700 mb-2">
+                        Program *
                     </label>
-                    <select id="mata_kuliah_id" 
-                            name="mata_kuliah_id"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('mata_kuliah_id') border-red-500 @enderror"
+                    <select id="program_id" 
+                            name="program_id"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('program_id') border-red-500 @enderror"
                             required>
-                        <option value="">Pilih Mata Kuliah</option>
-                        @foreach($mataKuliah as $mk)
-                            <option value="{{ $mk->id }}" {{ old('mata_kuliah_id') == $mk->id ? 'selected' : '' }}>
-                                {{ $mk->kode_materi }} - {{ $mk->nama_materi }}
+                        <option value="">Pilih Program</option>
+                        @foreach($program as $prog)
+                            <option value="{{ $prog->id }}" {{ old('program_id') == $prog->id ? 'selected' : '' }}>
+                              {{ $prog->nama_materi}}
                             </option>
                         @endforeach
                     </select>
-                    @error('mata_kuliah_id')
+                    @error('program_id')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
@@ -60,7 +56,7 @@
                            name="materi" 
                            value="{{ old('materi') }}"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('materi') border-red-500 @enderror"
-                           placeholder="Contoh: Pengenalan HTML & CSS"
+                           placeholder="Contoh: Alasan Mengapa Kita Berpartai"
                            required>
                     @error('materi')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -100,25 +96,25 @@
                 </div>
             </div>
 
-            <!-- Info Jadwal -->
+            <!-- Info Kegiatan -->
             <div class="mt-6 p-4 bg-blue-50 rounded-lg">
                 <div class="flex items-center">
                     <i class="fas fa-info-circle text-blue-600 mr-2"></i>
                     <p class="text-blue-700 text-sm">
-                        <strong>Pastikan waktu tidak bentrok</strong> dengan jadwal lain. Sistem akan mengecek otomatis.
+                        <strong>Pastikan waktu tidak bentrok</strong> dengan Kegiatan lain. Sistem akan mengecek otomatis.
                     </p>
                 </div>
             </div>
 
             <!-- Actions -->
             <div class="mt-8 flex justify-end space-x-4">
-                <a href="{{ route('jadwal.index') }}" 
+                <a href="{{ route('kegiatan.index') }}" 
                    class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
                     Batal
                 </a>
                 <button type="submit" 
                         class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
-                    <i class="fas fa-save mr-2"></i>Simpan Jadwal
+                    <i class="fas fa-save mr-2"></i>Simpan Kegiatan
                 </button>
             </div>
         </form>
@@ -145,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Validasi waktu
-    document.getElementById('jadwalForm').addEventListener('submit', function(e) {
+    document.getElementById('kegiatanForm').addEventListener('submit', function(e) {
         const mulai = new Date(document.getElementById('waktu_mulai').value);
         const akhir = new Date(document.getElementById('waktu_akhir').value);
         
@@ -157,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Cek apakah waktu sudah lewat
         if (mulai < new Date()) {
-            if (!confirm('Waktu mulai sudah lewat. Yakin ingin membuat jadwal?')) {
+            if (!confirm('Waktu mulai sudah lewat. Yakin ingin membuat kegiatan?')) {
                 e.preventDefault();
                 return false;
             }

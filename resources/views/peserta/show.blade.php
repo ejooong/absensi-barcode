@@ -1,8 +1,7 @@
 <!-- resources/views/peserta/show.blade.php -->
 @extends('layouts.admin')
 
-@section('title', 'Detail Peserta')
-@section('subtitle', 'Informasi lengkap peserta')
+
 
 @section('content')
 <div class="max-w-4xl mx-auto">
@@ -33,7 +32,7 @@
                             <span class="font-medium">{{ $peserta->nama }}</span>
                         </div>
                         <div class="flex justify-between border-b pb-2">
-                            <span class="text-gray-600">Jabatan:</span>a
+                            <span class="text-gray-600">Jabatan:</span>
                             <span class="font-medium">{{ $peserta->jabatan ?? '-' }}</span>
                         </div>
                             

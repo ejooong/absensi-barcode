@@ -6,26 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-public function up()
-{
-    Schema::create('absensi', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('peserta_id')->constrained('peserta');
-        $table->foreignId('jadwal_sesi_id')->constrained('jadwal_sesi');
-        $table->datetime('waktu_absen');
-        $table->enum('status', ['hadir', 'terlambat'])->default('hadir');
-        $table->timestamps();
-    });
-}
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function up()
     {
-        Schema::dropIfExists('absensi');
+        // Hanya update foreign key constraint, tidak rename column
+        Schema::table('absensi', function (Blueprint $table) {
+            // Drop foreign key constraint lama
+            $table->dropForeign(['jadwal_sesi_id']);
+            
+            // Update foreign key ke tabel kegiatan
+            $table->foreign('jadwal_sesi_id')
+                  ->references('id')
+                  ->on('kegiatan') // Ganti ke tabel kegiatan
+                  ->onDelete('cascade');
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('absensi', function (Blueprint $table) {
+            // Drop foreign key constraint baru
+            $table->dropForeign(['jadwal_sesi_id']);
+            
+            // Kembalikan ke tabel jadwal_sesi
+            $table->foreign('jadwal_sesi_id')
+                  ->references('id')
+                  ->on('jadwal_sesi')
+                  ->onDelete('cascade');
+        });
     }
 };

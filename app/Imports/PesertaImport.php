@@ -26,7 +26,7 @@ class PesertaImport implements ToModel, WithHeadingRow, WithValidation
         }
 
         // Generate unique barcode
-        $barcodeData = 'ABS-' . time() . '-' . Str::random(8);
+        $barcodeData = 'ABN-' . time() . '-' . Str::random(8);
 
         $data = [
             'nama' => $row['nama'],

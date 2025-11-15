@@ -15,7 +15,10 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex items-center">
-                    <i class="fas fa-qrcode text-blue-600 text-2xl mr-3"></i>
+                    <img src="{{ asset('images/abn.png') }}" 
+                         alt="ABSENSI BARCODE" 
+                         style="height: 82px; width: 82px;"
+                         class="mr-1 object-contain">
                     <span class="text-xl font-bold text-gray-800">ABSENSI BARCODE</span>
                 </div>
 
@@ -24,11 +27,6 @@
                     <a href="{{ route('dashboard') }}" 
                        class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
                         <i class="fas fa-tachometer-alt mr-1"></i>Dashboard
-                    </a>
-                    
-                    <a href="{{ route('absensi.riwayat') }}" 
-                       class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
-                        <i class="fas fa-history mr-1"></i>Riwayat
                     </a>
 
                     <!-- Data Management Dropdown -->
@@ -55,34 +53,34 @@
                                 Tambah Peserta
                             </a>
 
-                            <!-- Jadwal Section -->
+                            <!-- Program Section -->
                             <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b mt-2">
-                                <i class="fas fa-calendar-alt mr-1"></i>Jadwal
+                                <i class="fas fa-book mr-1"></i>Program
                             </div>
-                            <a href="{{ route('jadwal.index') }}" 
+                            <a href="{{ route('program.index') }}" 
                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
                                 <i class="fas fa-list mr-2 text-gray-500"></i>
-                                Daftar Jadwal
+                                Daftar Program
                             </a>
-                            <a href="{{ route('jadwal.create') }}" 
+                            <a href="{{ route('program.create') }}" 
                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
                                 <i class="fas fa-plus-circle mr-2 text-green-500"></i>
-                                Buat Jadwal
+                                Tambah Program
                             </a>
 
-                            <!-- Mata Kuliah Section -->
+                            <!-- Kegiatan Section -->
                             <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b mt-2">
-                                <i class="fas fa-book mr-1"></i>Mata Kuliah
+                                <i class="fas fa-calendar-alt mr-1"></i>Kegiatan
                             </div>
-                            <a href="{{ route('mata-kuliah.index') }}" 
+                            <a href="{{ route('kegiatan.index') }}" 
                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
                                 <i class="fas fa-list mr-2 text-gray-500"></i>
-                                Daftar Mata Kuliah
+                                Daftar Kegiatan
                             </a>
-                            <a href="{{ route('mata-kuliah.create') }}" 
+                            <a href="{{ route('kegiatan.create') }}" 
                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
                                 <i class="fas fa-plus-circle mr-2 text-green-500"></i>
-                                Tambah Mata Kuliah
+                                Tambah Kegiatan
                             </a>
 
                             <!-- Export/Import Section -->
@@ -102,6 +100,11 @@
                         </div>
                     </div>
                     
+                    <a href="{{ route('absensi.riwayat') }}" 
+                       class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-history mr-1"></i>Riwayat
+                    </a>
+
                     <!-- User Menu -->
                     <div class="relative group">
                         <button class="flex items-center text-sm text-gray-700 hover:text-blue-600">

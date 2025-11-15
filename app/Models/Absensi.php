@@ -9,8 +9,13 @@ class Absensi extends Model
 {
     use HasFactory;
 
-    protected $table = 'absensi'; // Tambahkan ini
-    protected $fillable = ['peserta_id', 'jadwal_sesi_id', 'waktu_absen', 'status'];
+    protected $table = 'absensi';
+    protected $fillable = [
+        'peserta_id', 
+        'kegiatan_id', // Ganti dari jadwal_sesi_id
+        'waktu_absen', 
+        'status'
+    ];
 
     protected $casts = [
         'waktu_absen' => 'datetime',
@@ -18,11 +23,12 @@ class Absensi extends Model
 
     public function peserta()
     {
-        return $this->belongsTo(Peserta::class);
+        return $this->belongsTo(Peserta::class, 'peserta_id');
     }
 
-    public function jadwalSesi()
+    // Ganti relasi jadwalSesi menjadi kegiatan
+    public function kegiatan()
     {
-        return $this->belongsTo(JadwalSesi::class);
+        return $this->belongsTo(Kegiatan::class, 'kegiatan_id');
     }
 }

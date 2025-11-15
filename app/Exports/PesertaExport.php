@@ -25,7 +25,7 @@ class PesertaExport implements FromCollection, WithHeadings, WithStyles, WithCol
                 'No' => $index + 1,
                 'Nama' => $peserta->nama,
                 'Jabatan' => $peserta->jabatan ?? '-',
-                'Kelas' => $peserta->kelas ?? '-', // HAPUS KELOMPOK
+                'Kelas' => $peserta->kelas ?? '-',
                 'Barcode' => $peserta->barcode_data,
             ];
         });
@@ -37,7 +37,7 @@ class PesertaExport implements FromCollection, WithHeadings, WithStyles, WithCol
             'No', 
             'Nama', 
             'Jabatan', 
-            'Kelas', // HAPUS KELOMPOK
+            'Kelas',
             'Barcode Data', 
             'QR Code'
         ];
@@ -49,7 +49,7 @@ class PesertaExport implements FromCollection, WithHeadings, WithStyles, WithCol
             'A' => 8,    // No
             'B' => 30,   // Nama
             'C' => 25,   // Jabatan
-            'D' => 15,   // Kelas (DIPINDAH, HAPUS KELOMPOK)
+            'D' => 15,   // Kelas
             'E' => 25,   // Barcode
             'F' => 20,   // QR Code
         ];
@@ -58,7 +58,7 @@ class PesertaExport implements FromCollection, WithHeadings, WithStyles, WithCol
     public function styles(Worksheet $sheet)
     {
         // Header style
-        $sheet->getStyle('A1:F1')->applyFromArray([ // UBAH MENJADI F1 (HAPUS KELOMPOK)
+        $sheet->getStyle('A1:F1')->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => '2C3E50']],
             'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
@@ -66,8 +66,8 @@ class PesertaExport implements FromCollection, WithHeadings, WithStyles, WithCol
 
         // Center align
         $sheet->getStyle('A:A')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('D:E')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER); // SESUAIKAN KOLOM
-        $sheet->getStyle('A2:F100')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER); // UBAH MENJADI F
+        $sheet->getStyle('D:E')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A2:F100')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         return [
             1 => ['font' => ['bold' => true]],
@@ -112,7 +112,7 @@ class PesertaExport implements FromCollection, WithHeadings, WithStyles, WithCol
                         $drawing->setHeight(60);
                         $drawing->setWidth(60);
                         
-                        $drawing->setCoordinates('F' . $row); // UBAH KE F (HAPUS KELOMPOK)
+                        $drawing->setCoordinates('F' . $row);
                         $drawing->setOffsetX(10);
                         $drawing->setOffsetY(10);
                         
@@ -125,7 +125,7 @@ class PesertaExport implements FromCollection, WithHeadings, WithStyles, WithCol
                             }
                         });
                     } else {
-                        $sheet->setCellValue('F' . $row, 'Tidak ada barcode'); // UBAH KE F
+                        $sheet->setCellValue('F' . $row, 'Tidak ada barcode');
                         $sheet->getStyle('F' . $row)->getAlignment()
                               ->setHorizontal(Alignment::HORIZONTAL_CENTER)
                               ->setVertical(Alignment::VERTICAL_CENTER);

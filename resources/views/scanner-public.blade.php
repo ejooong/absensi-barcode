@@ -3,669 +3,115 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Scanner Absensi - Absensi Barcode</title>
+    <title>Scanner Kehadiran</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!-- Responsive CSS untuk Web dan Mobile -->
-    <style>
-        /* Reset dan Base Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: system-ui, -apple-system, sans-serif; 
-            background: linear-gradient(135deg, #3B82F6, #8B5CF6); 
-            min-height: 100vh;
-            padding: 0;
-        }
-        .container { 
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 1rem;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .header { 
-            text-align: center; 
-            margin-bottom: 1.5rem;
-            flex-shrink: 0;
-        }
-        .logo-container {
-            background: white;
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .logo-icon {
-            color: #2563EB;
-            font-size: 2rem;
-        }
-        .title {
-            font-size: 1.75rem;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 0.25rem;
-        }
-        .subtitle {
-            color: rgba(255,255,255,0.9);
-            font-size: 0.9rem;
-        }
-        .jadwal-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-        .jadwal-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 0.75rem;
-        }
-        .jadwal-text { flex: 1; }
-        .jadwal-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1F2937;
-            margin-bottom: 0.25rem;
-            line-height: 1.3;
-        }
-        .jadwal-desc {
-            font-size: 0.85rem;
-            color: #6B7280;
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-        .jadwal-time {
-            font-size: 0.9rem;
-            color: #2563EB;
-            font-weight: 600;
-        }
-        .status-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #10B981;
-            margin-left: 0.75rem;
-            flex-shrink: 0;
-            margin-top: 0.25rem;
-        }
-        .status-indicator.inactive { background: #EF4444; }
-        .time-display { text-align: right; padding-top: 0.75rem; border-top: 1px solid #F3F4F6; }
-        .current-time {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #1F2937;
-            margin-bottom: 0.25rem;
-        }
-        .current-date { font-size: 0.85rem; color: #6B7280; }
-
-        .main-content { display: flex; flex-direction: column; gap: 1.25rem; flex: 1; }
-
-        .scanner-section {
-            background: white;
-            border-radius: 1rem;
-            padding: 1.25rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1F2937;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-        }
-        .section-icon { margin-right: 0.5rem; font-size: 1.1rem; }
-        .camera-blue { color: #2563EB; }
-        .camera-purple { color: #8B5CF6; }
-        .camera-green { color: #059669; }
-
-        .scanner-container { 
-            position: relative; 
-            width: 100%; 
-            margin-bottom: 1rem; 
-            border-radius: 0.75rem;
-            overflow: hidden;
-            background: #000;
-            min-height: 300px;
-        }
-        #reader { 
-            width: 100% !important; 
-            height: 100% !important;
-        }
-        .scanner-overlay { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            pointer-events: none; 
-            z-index: 10;
-        }
-        .scanning-line { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 3px; 
-            background: linear-gradient(90deg, transparent, #3B82F6, transparent); 
-            animation: scan 2s infinite; 
-        }
-        @keyframes scan { 
-            0% { transform: translateY(0); } 
-            50% { transform: translateY(100%); } 
-            100% { transform: translateY(0); } 
-        }
-        .scanner-frame { 
-            position: absolute; 
-            top: 10%; 
-            left: 10%; 
-            width: 80%; 
-            height: 80%; 
-            border: 2px solid rgba(59, 130, 246, 0.4); 
-            border-radius: 0.5rem; 
-        }
-
-        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
-        .camera-controls { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
-
-        .btn { padding: 0.875rem 1rem; border-radius: 0.75rem; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; min-height: 48px; }
-        .btn-icon { margin-right: 0.5rem; font-size: 0.9rem; }
-        .btn-success { background: #059669; color: white; }
-        .btn-success:hover { background: #047857; }
-        .btn-danger { background: #DC2626; color: white; }
-        .btn-danger:hover { background: #B91C1C; }
-        .btn-secondary { background: #6B7280; color: white; padding: 0.75rem; }
-        .btn-secondary:hover { background: #4B5563; }
-        .btn-primary { background: #2563EB; color: white; }
-        .btn-primary:hover { background: #1D4ED8; }
-        .hidden { display: none !important; }
-
-        .input-section { background: white; border-radius: 1rem; padding: 1.25rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .input-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .barcode-input { width: 100%; padding: 1rem; border: 2px solid #E5E7EB; border-radius: 0.75rem; font-family: monospace; font-size: 1.1rem; text-align: center; transition: border-color 0.2s; }
-        .barcode-input:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-
-        .result-section { background: white; border-radius: 1rem; padding: 1.25rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        #result-container { min-height: 140px; display: flex; align-items: center; justify-content: center; }
-        .result-placeholder { text-align: center; color: #9CA3AF; }
-        .placeholder-icon { font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5; }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
-        .stat-card { padding: 1rem; border-radius: 0.75rem; text-align: center; }
-        .stat-success { background: #ECFDF5; border: 1px solid #A7F3D0; }
-        .stat-failed { background: #FEF2F2; border: 1px solid #FECACA; }
-        .stat-number { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.25rem; }
-        .stat-success .stat-number { color: #059669; }
-        .stat-failed .stat-number { color: #DC2626; }
-        .stat-label { font-size: 0.8rem; font-weight: 600; }
-        .stat-success .stat-label { color: #065F46; }
-        .stat-failed .stat-label { color: #991B1B; }
-
-        .navigation { text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2); }
-        .nav-link { color: white; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: background 0.2s; }
-        .nav-link:hover { background: rgba(255,255,255,0.1); }
-        .nav-icon { margin-right: 0.5rem; }
-
-        .result-success { background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
-        .result-error { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
-        .result-icon { width: 3rem; height: 3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
-        .success-icon { background: #D1FAE5; color: #059669; }
-        .error-icon { background: #FEE2E2; color: #DC2626; }
-        .result-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
-        .result-success .result-title { color: #065F46; }
-        .result-error .result-title { color: #991B1B; }
-        .result-details { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem; }
-        .detail-row { display: flex; justify-content: space-between; align-items: center; }
-        .detail-label { color: #6B7280; }
-        .detail-value { font-weight: 500; }
-        .status-badge { padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
-        .status-hadir { background: #D1FAE5; color: #065F46; }
-        .status-terlambat { background: #FEF3C7; color: #92400E; }
-
-        .scanner-loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            z-index: 5;
-        }
-        .loading-spinner { width: 2.5rem; height: 2.5rem; border: 3px solid transparent; border-top: 3px solid white; border-radius: 50%; margin: 0 auto 0.75rem; animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 1rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 1.5rem;
-            padding: 2rem;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-            position: relative;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 2.5rem;
-        }
-
-        .modal-icon.success {
-            background: #D1FAE5;
-            color: #059669;
-        }
-
-        .modal-icon.warning {
-            background: #FEF3C7;
-            color: #D97706;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-subtitle {
-            color: #6B7280;
-            font-size: 1rem;
-        }
-
-        .modal-body {
-            margin-bottom: 2rem;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #F3F4F6;
-        }
-
-        .info-item:last-child {
-            border-bottom: none;
-        }
-
-        .info-label {
-            color: #6B7280;
-            font-weight: 500;
-        }
-
-        .info-value {
-            font-weight: 600;
-            text-align: right;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: center;
-        }
-
-        .btn-modal {
-            padding: 0.875rem 1.5rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            min-width: 120px;
-        }
-
-        .btn-modal-primary {
-            background: #2563EB;
-            color: white;
-        }
-
-        .btn-modal-primary:hover {
-            background: #1D4ED8;
-        }
-
-        .btn-modal-secondary {
-            background: #6B7280;
-            color: white;
-        }
-
-        .btn-modal-secondary:hover {
-            background: #4B5563;
-        }
-
-        /* Scan Limit Warning */
-        .scan-limit-warning {
-            background: #FEF3C7;
-            border: 1px solid #F59E0B;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            display: none;
-        }
-
-        .scan-limit-warning.active {
-            display: block;
-        }
-
-        .warning-icon {
-            color: #D97706;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 640px) {
-            .container { max-width: 640px; padding: 1.5rem; }
-            .controls-grid { grid-template-columns: 1fr 1fr; }
-            .info-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (min-width: 768px) {
-            .container { max-width: 768px; }
-            .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-            .scanner-section { grid-column: 1 / -1; }
-            .modal-content { padding: 2.5rem; }
-        }
-        @media (min-width: 1024px) {
-            .container { max-width: 1024px; }
-            .main-content { grid-template-columns: 2fr 1fr; }
-            .scanner-section { grid-column: 1; }
-            .input-section { grid-column: 2; grid-row: 1; }
-            .result-section { grid-column: 2; grid-row: 2; }
-        }
-        @media (max-height: 700px) {
-            .container { padding: 1rem; }
-            .header { margin-bottom: 1rem; }
-            .jadwal-card { margin-bottom: 1rem; padding: 1rem; }
-            .scanner-section, .input-section, .result-section { padding: 1rem; }
-            .modal-content { padding: 1.5rem; }
-        }
-        @media (max-width: 480px) {
-            .modal-content { margin: 1rem; padding: 1.5rem; }
-            .modal-footer { flex-direction: column; }
-            .btn-modal { width: 100%; }
-        }
-        #qr-shaded-region {
-    border-width: 0px !important;
-    border: none !important;
-}
-
-/* Custom scanner frame yang lebih baik */
-.scanner-frame-custom {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 250px;
-    height: 250px;
-    border: 3px solid #3B82F6;
-    border-radius: 12px;
-    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.4);
-    z-index: 15;
-    pointer-events: none;
-}
-
-/* Corner indicators */
-.scanner-frame-custom::before,
-.scanner-frame-custom::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #3B82F6;
-}
-
-.scanner-frame-custom::before {
-    top: -3px;
-    left: -3px;
-    border-right: none;
-    border-bottom: none;
-    border-top-left-radius: 8px;
-}
-
-.scanner-frame-custom::after {
-    top: -3px;
-    right: -3px;
-    border-left: none;
-    border-bottom: none;
-    border-top-right-radius: 8px;
-}
-
-.scanner-frame-custom .corner-bottom-left,
-.scanner-frame-custom .corner-bottom-right {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #3B82F6;
-    bottom: -3px;
-}
-
-.scanner-frame-custom .corner-bottom-left {
-    left: -3px;
-    border-right: none;
-    border-top: none;
-    border-bottom-left-radius: 8px;
-}
-
-.scanner-frame-custom .corner-bottom-right {
-    right: -3px;
-    border-left: none;
-    border-top: none;
-    border-bottom-right-radius: 8px;
-}
-    </style>
-
-    <!-- Scanner Library yang lebih stabil -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ asset('css/scanner.css') }}">
+  <!-- JavaScript Libraries -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+     
+    </div>
+
     <div class="container">
         <!-- Header -->
         <div class="header">
             <div class="logo-container">
-                <i class="fas fa-qrcode logo-icon"></i>
+                <img src="{{ asset('images/abn.png') }}" 
+                     alt="ABSENSI BARCODE" 
+                     class="logo-img">
             </div>
-            <h1 class="title">SCANNER ABSENSI</h1>
-            <p class="subtitle">Scan QR Code untuk absensi (Laptop & Mobile)</p>
+            <h1 class="title"></h1>
+            
         </div>
 
-<!-- Jadwal Info -->
-<div class="jadwal-card">
-    <div class="jadwal-header">
-        <div class="jadwal-text">
-            <h3 class="jadwal-title">
-                @if(isset($jadwalAktif) && $jadwalAktif)
-                    {{ $jadwalAktif->mataKuliah->nama_materi ?? 'Mata Kuliah' }} - Sesi {{ $jadwalAktif->sesi_ke ?? '' }}
-                @else
-                    Tidak ada jadwal aktif
-                @endif
+<!-- Kegiatan Info -->
+        <div class="kegiatan-card">
+            <div class="kegiatan-header">
+                <div class="kegiatan-text">
+                    <h3 class="kegiatan-title">
+                        @if($kegiatanAktif)
+                            {{ $kegiatanAktif->program->nama_materi }} - Sesi {{ $kegiatanAktif->sesi_ke }}
+                        @else
+                            Tidak ada kegiatan aktif
+                        @endif
+                    </h3>
+                    <p class="kegiatan-desc">
+                        @if($kegiatanAktif)
+                            {{ $kegiatanAktif->materi }}
+                        @else
+                            Silakan coba lagi nanti
+                        @endif
+                    </p>
+                    <p class="kegiatan-time">
+                        @if($kegiatanAktif)
+                            {{ \Carbon\Carbon::parse($kegiatanAktif->waktu_mulai)->format('H:i') }} - 
+                            {{ \Carbon\Carbon::parse($kegiatanAktif->waktu_akhir)->format('H:i') }}
+                        @endif
+                    </p>
+                </div>
+                <!-- <div class="status-indicator {{ $kegiatanAktif ? '' : 'inactive' }}"></div> -->
+            </div>
+            <div class="time-display">
+                <div id="current-time" class="current-time">00:00:00</div>
+                <div id="current-date" class="current-date">Hari, 1 Januari 2024</div>
+            </div>
+        </div>
+
+        <!-- Scanner Section -->
+        <div class="scanner-section">
+            <h3 class="section-title">
+                <i class="fas fa-camera section-icon"></i>Scanner QR Code
             </h3>
-            <p class="jadwal-desc">
-                @if(isset($jadwalAktif) && $jadwalAktif)
-                    {{ $jadwalAktif->materi ?? 'Tidak ada deskripsi' }}
-                @else
-                    Silakan coba lagi nanti
-                @endif
-            </p>
-            <p class="jadwal-time">
-                @if(isset($jadwalAktif) && $jadwalAktif)
-                    {{ \Carbon\Carbon::parse($jadwalAktif->waktu_mulai)->format('H:i') }} - 
-                    {{ \Carbon\Carbon::parse($jadwalAktif->waktu_akhir)->format('H:i') }}
-                @endif
-            </p>
+
+            <div class="scanner-container">
+                <div id="reader"></div>
+                <div id="scanner-loading" class="scanner-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Mengaktifkan kamera...</p>
+                </div>
+                
+                <div class="scanner-overlay">
+                    <div class="scanning-line"></div>
+                    <div class="scanner-frame"></div>
+                </div>
+            </div>
+
+            <!-- Scanner Controls -->
+            <div class="controls">
+                <button id="btn-start-scanner" onclick="startScanner()" class="btn btn-success">
+                    <i class="fas fa-play btn-icon"></i>Mulai Scan
+                </button>
+                <button id="btn-stop-scanner" onclick="stopScanner()" class="btn btn-danger hidden">
+                    <i class="fas fa-stop btn-icon"></i>Stop Scan
+                </button>
+            </div>
+
+            <!-- Camera Controls -->
+            <div class="camera-controls">
+                <button onclick="switchCamera()" class="btn btn-secondary" title="Ganti kamera">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+
+                <select id="camera-select" onchange="changeCamera(this.value)">
+                    <option value="">Pilih Kamera</option>
+                </select>
+            </div>
+
+            <div class="tips">
+                Tips: Arahkan kamera ke QR Code, scanner akan bekerja otomatis
+            </div>
         </div>
-        <div class="status-indicator {{ (isset($jadwalAktif) && $jadwalAktif) ? '' : 'inactive' }}"></div>
     </div>
-    <div class="time-display">
-        <div id="current-time" class="current-time">00:00:00</div>
-        <div id="current-date" class="current-date">Hari, 1 Januari 2024</div>
-    </div>
-</div>
-
-        <!-- Scan Limit Warning -->
-        <div id="scan-limit-warning" class="scan-limit-warning">
-            <i class="fas fa-exclamation-triangle warning-icon"></i>
-            <p><strong>Peringatan:</strong> Scanner akan berhenti sementara karena terlalu banyak percobaan scan.</p>
-            <p class="text-sm">Tunggu <span id="countdown-timer">10</span> detik untuk scan kembali.</p>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Scanner Section -->
-            <div class="scanner-section">
-                <h3 class="section-title">
-                    <i class="fas fa-camera section-icon camera-blue"></i>Scanner QR Code
-                </h3>
-
-                <div class="scanner-container">
-                    <div id="reader"></div>
-                    <div id="scanner-loading" class="scanner-loading">
-                        <div class="loading-spinner"></div>
-                        <p>Mengaktifkan kamera...</p>
-                    </div>
-                    
-                    <div class="scanner-overlay">
-                        <div class="scanning-line"></div>
-                        <div class="scanner-frame"></div>
-                    </div>
-                </div>
-
-                <!-- Scanner Controls -->
-                <div class="controls-grid" style="align-items:center;">
-                    <button id="btn-start-scanner" onclick="startScanner()" class="btn btn-success">
-                        <i class="fas fa-play btn-icon"></i>Mulai Scan
-                    </button>
-                    <button id="btn-stop-scanner" onclick="stopScanner()" class="btn btn-danger hidden">
-                        <i class="fas fa-stop btn-icon"></i>Stop Scan
-                    </button>
-                </div>
-
-                <!-- Camera Controls -->
-                <div style="display:flex; flex-direction:column; gap:0.5rem;">
-                    <div class="camera-controls" style="justify-content:flex-start;">
-                        <button onclick="switchCamera()" class="btn btn-secondary" title="Ganti kamera">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-
-                        <button id="btn-flash" onclick="toggleFlash()" class="btn btn-secondary hidden" title="Toggle flash">
-                            <i class="fas fa-bolt"></i>
-                        </button>
-
-                        <select id="camera-select" onchange="changeCamera(this.value)" style="padding:.5rem; border-radius:.5rem; margin-left:0.5rem;">
-                            <option value="">Pilih Kamera</option>
-                        </select>
-                    </div>
-                    <div style="font-size:0.85rem; color:#6B7280; margin-top:0.25rem;">
-                        Tips: Arahkan kamera ke QR Code, scanner akan bekerja otomatis
-                    </div>
-                </div>
-            </div>
-
-            <!-- Manual Input Section -->
-            <div class="input-section">
-                <h3 class="section-title">
-                    <i class="fas fa-keyboard section-icon camera-purple"></i>Input Manual
-                </h3>
-
-                <div class="input-group">
-                    <input type="text" 
-                           id="manual-barcode" 
-                           class="barcode-input"
-                           placeholder="Ketik kode barcode di sini..."
-                           autocomplete="off"
-                           autocapitalize="none">
-
-                    <button onclick="processManualBarcode()" class="btn btn-primary">
-                        <i class="fas fa-paper-plane btn-icon"></i>Proses Absensi
-                    </button>
-                </div>
-            </div>
-
-            <!-- Result Section -->
-            <div class="result-section">
-                <h3 class="section-title">
-                    <i class="fas fa-clipboard-check section-icon camera-green"></i>Hasil
-                </h3>
-
-                <div id="result-container">
-                    <div class="result-placeholder">
-                        <i class="fas fa-qrcode placeholder-icon"></i>
-                        <p>Scan atau input kode untuk absensi</p>
-                    </div>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card stat-success">
-                        <div class="stat-number" id="stat-success">0</div>
-                        <div class="stat-label">Berhasil</div>
-                    </div>
-                    <div class="stat-card stat-failed">
-                        <div class="stat-number" id="stat-failed">0</div>
-                        <div class="stat-label">Gagal</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
 
     <!-- Modal Success -->
     <div id="success-modal" class="modal-overlay">
@@ -1113,13 +559,14 @@ function extractDataFromMessage(data) {
     // Coba extract data dari berbagai kemungkinan struktur response
     return {
         nama: data.nama || data.data?.nama || '-',
-        mata_kuliah: data.mata_kuliah || data.data?.mata_kuliah || '-',
+        program: data.program || data.data?.program || '-',
         sesi: data.sesi || data.data?.sesi || '-',
         status: data.status || data.data?.status || 'hadir',
         waktu: data.waktu || data.data?.waktu || '-',
         tanggal: data.tanggal || data.data?.tanggal || '-'
     };
 }
+
     // Show success modal
     function showSuccessModal(data) {
         const modalContent = document.getElementById('success-modal-content');
@@ -1129,8 +576,8 @@ function extractDataFromMessage(data) {
                 <span class="info-value" style="color: #065F46; font-weight: 700;">${data.nama || '-'}</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Mata Kuliah:</span>
-                <span class="info-value">${data.mata_kuliah || '-'}</span>
+                <span class="info-label">Program:</span>
+                <span class="info-value">${data.program || '-'}</span>
             </div>
             <div class="info-item">
                 <span class="info-label">Sesi:</span>
@@ -1162,7 +609,7 @@ function showAlreadyAbsenModal(data) {
     // Validasi dan sanitasi data
     const safeData = {
         nama: data?.nama || '-',
-        mata_kuliah: data?.mata_kuliah || '-',
+        program: data?.program || '-',
         sesi: data?.sesi || '-',
         status: data?.status || 'hadir',
         waktu: data?.waktu || '-',
@@ -1175,8 +622,8 @@ function showAlreadyAbsenModal(data) {
             <span class="info-value">${safeData.nama}</span>
         </div>
         <div class="info-item">
-            <span class="info-label">Mata Kuliah:</span>
-            <span class="info-value">${safeData.mata_kuliah}</span>
+            <span class="info-label">Program:</span>
+            <span class="info-value">${safeData.program}</span>
         </div>
         <div class="info-item">
             <span class="info-label">Sesi:</span>
@@ -1224,6 +671,10 @@ function showAlreadyAbsenModal(data) {
                         <div class="detail-row">
                             <span class="detail-label">Nama:</span>
                             <span class="detail-value" style="font-weight: 600; color: #065F46;">${d.nama || '-'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Program:</span>
+                            <span class="detail-value">${d.program || '-'}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Status:</span>
@@ -1319,6 +770,5 @@ function showAlreadyAbsenModal(data) {
         updateTime();
     });
 </script>
-
 </body>
 </html>
