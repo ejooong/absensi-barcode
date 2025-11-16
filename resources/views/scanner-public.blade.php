@@ -29,7 +29,7 @@
                      alt="ABSENSI BARCODE" 
                      class="logo-img">
             </div>
-            <h1 class="title">SCANNER ABSENSI</h1>
+          
         </div>
 
         <!-- Kegiatan Info -->
