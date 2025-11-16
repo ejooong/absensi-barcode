@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\DB;
 class PesertaController extends Controller
 {
     public function index(Request $request)
-{  $peserta = Peserta::latest()->get(); // Semua data tanpa pagination
+{  
+$peserta = Peserta::latest()->get(); // Semua data tanpa pagination
         return view('peserta.index', compact('peserta'));
 }
 
@@ -126,11 +127,38 @@ private function generateQRWithSimpleQRCoder($data, $size = 800)
         return redirect()->route('peserta.index')->with('success', 'Peserta berhasil diupdate!');
     }
 
-    public function destroy(Peserta $peserta)
-    {
+public function destroy(Peserta $peserta)
+{
+    try {
+        $pesertaName = $peserta->nama;
+
+        // 1. Hapus file QR Code terlebih dahulu
+        if ($peserta->qr_code_file) {
+            $filePath = 'public/qr-codes/' . $peserta->qr_code_file;
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+                \Log::info("Deleted QR file for peserta: $pesertaName");
+            }
+        }
+
+        // 2. Hapus data absensi yang terkait dengan peserta ini
+        $deletedAbsensiCount = DB::table('absensi')->where('peserta_id', $peserta->id)->delete();
+        \Log::info("Deleted $deletedAbsensiCount absensi records for peserta: $pesertaName");
+
+        // 3. Sekarang hapus peserta
         $peserta->delete();
+        \Log::info("Successfully deleted peserta: $pesertaName");
+
         return redirect()->route('peserta.index')->with('success', 'Peserta berhasil dihapus!');
+
+    } catch (\Exception $e) {
+        \Log::error('Error deleting peserta: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return redirect()->route('peserta.index')
+            ->with('error', 'Terjadi kesalahan saat menghapus peserta: ' . $e->getMessage());
     }
+}
 
     /**
      * (Optional) Generate QR Code untuk ditampilkan di view (SVG)
@@ -247,7 +275,7 @@ private function generateQRWithSimpleQRCoder($data, $size = 800)
         return $bin;
     }
 
-    public function deleteAll(Request $request)
+    public function truncateAll(Request $request)
 {
     try {
         DB::beginTransaction();

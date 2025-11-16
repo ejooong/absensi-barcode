@@ -21,8 +21,6 @@
            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center">
             <i class="fas fa-user-plus mr-2"></i>Tambah Peserta
         </a>
-        
-
     </div>
 </div>
 
@@ -45,11 +43,7 @@
                 <tr class="hover:bg-gray-50 transition-colors duration-150">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-gray-900">
-                            @if($peserta instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                                {{ ($peserta->currentPage() - 1) * $peserta->perPage() + $index + 1 }}
-                            @else
-                                {{ $index + 1 }}
-                            @endif
+                            {{ $index + 1 }}
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -112,15 +106,8 @@
     </div>
 </div>
 
-<!-- Pagination (jika menggunakan pagination) -->
-@if($peserta instanceof \Illuminate\Pagination\LengthAwarePaginator && $peserta->hasPages())
-<div class="mt-6">
-    {{ $peserta->links() }}
-</div>
-@endif
-
 <!-- Warning jika data terlalu banyak -->
-@if(!($peserta instanceof \Illuminate\Pagination\LengthAwarePaginator) && $peserta->count() > 50)
+@if($peserta->count() > 50)
 <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
     <div class="flex items-center">
         <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
@@ -132,7 +119,7 @@
 @endif
 
 <!-- Form untuk Hapus Semua (Hanya SATU form) -->
-<form id="deleteAllForm" action="{{ route('peserta.delete-all') }}" method="POST" style="display: none;">
+<form id="deleteAllForm" action="{{ route('peserta.truncate-all') }}" method="POST" style="display: none;">
     @csrf
     <!-- HAPUS @method('DELETE') karena route menggunakan POST -->
 </form>
@@ -153,7 +140,7 @@ function confirmDeleteAll() {
     
     Swal.fire({
         title: 'Hapus Semua Data?',
-        html: `Anda akan menghapus <b>${count} data peserta</b>. Tindakan ini tidak dapat dibatalkan!`,
+        html: `Anda akan menghapus <b>${count} data peserta</b> dan <b>semua data absensi terkait</b>. Tindakan ini tidak dapat dibatalkan!`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',

@@ -28,8 +28,9 @@ Route::middleware(['auth:petugas'])->group(function () {
     Route::get('/admin/scanner', [AbsensiController::class, 'scanner'])->name('scanner.admin');
     
     // Peserta routes - HAPUS DUPLIKASI
-    Route::resource('peserta', PesertaController::class);
-    Route::post('/peserta/delete-all', [PesertaController::class, 'deleteAll'])->name('peserta.delete-all');
+    Route::resource('peserta', PesertaController::class)->parameters(['peserta' => 'peserta']);
+    Route::post('/peserta/truncate-all', [PesertaController::class, 'truncateAll'])->name('peserta.truncate-all');
+
     Route::get('/peserta/{peserta}/download-qrcode', [PesertaController::class, 'downloadQrCode'])->name('peserta.download-qrcode');
 
     // Program routes
