@@ -29,8 +29,7 @@
                      alt="ABSENSI BARCODE" 
                      class="logo-img">
             </div>
-          
-        </div>
+                  </div>
 
         <!-- Kegiatan Info -->
         <div class="kegiatan-card">

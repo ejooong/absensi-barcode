@@ -6,17 +6,15 @@ use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
-use App\Http\Controllers\KegiatanController; // Ganti dari JadwalController
-use App\Http\Controllers\ProgramController; // Ganti dari MataKuliahController
+use App\Http\Controllers\KegiatanController;
+use App\Http\Controllers\ProgramController;
 
 // Public routes - Bisa diakses tanpa login
 Route::get('/', [AbsensiController::class, 'scannerPublic'])->name('home');
-
-// Scanner untuk peserta (tanpa login)
 Route::get('/scanner', [AbsensiController::class, 'scannerPublic'])->name('scanner.public');
 Route::get('/share-scanner', function () {
     return view('auth.share');
-})->name('share.scanner'); // Tambahkan route ini
+})->name('share.scanner');
 Route::post('/absensi/process', [AbsensiController::class, 'processAbsensi'])->name('absensi.process');
 
 // Login routes
@@ -26,24 +24,18 @@ Route::post('/login', [AuthController::class, 'login']);
 // Protected routes (harus login)
 Route::middleware(['auth:petugas'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Admin scanner (dengan akses lebih)
     Route::get('/admin/scanner', [AbsensiController::class, 'scanner'])->name('scanner.admin');
     
-    // Peserta routes
-    Route::resource('peserta', PesertaController::class)->parameters([
-        'peserta' => 'peserta'
-    ]);
-    
-    Route::get('/peserta/{peserta}/download-qrcode', [PesertaController::class, 'downloadQrCode'])
-         ->name('peserta.download-qrcode');
+    // Peserta routes - HAPUS DUPLIKASI
+    Route::resource('peserta', PesertaController::class);
+    Route::post('/peserta/delete-all', [PesertaController::class, 'deleteAll'])->name('peserta.delete-all');
+    Route::get('/peserta/{peserta}/download-qrcode', [PesertaController::class, 'downloadQrCode'])->name('peserta.download-qrcode');
 
-    // Program routes (GANTI dari Mata Kuliah)
+    // Program routes
     Route::resource('program', ProgramController::class);
 
-    // Kegiatan routes (GANTI dari Jadwal)
+    // Kegiatan routes
     Route::resource('kegiatan', KegiatanController::class);
     Route::get('/kegiatan/aktif', [KegiatanController::class, 'getKegiatanAktif'])->name('kegiatan.getKegiatanAktif');
 

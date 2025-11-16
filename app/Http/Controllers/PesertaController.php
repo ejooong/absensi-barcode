@@ -7,14 +7,13 @@ use App\Models\Peserta;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\DB;
 class PesertaController extends Controller
 {
-    public function index()
-    {
-        $peserta = Peserta::latest()->paginate(10);
+    public function index(Request $request)
+{  $peserta = Peserta::latest()->get(); // Semua data tanpa pagination
         return view('peserta.index', compact('peserta'));
-    }
+}
 
     public function create()
     {
@@ -247,4 +246,51 @@ private function generateQRWithSimpleQRCoder($data, $size = 800)
         
         return $bin;
     }
+
+    public function deleteAll(Request $request)
+{
+    try {
+        DB::beginTransaction();
+
+        $totalPeserta = Peserta::count();
+        
+        if ($totalPeserta === 0) {
+            return redirect()->route('peserta.index')->with('warning', 'Tidak ada data peserta untuk dihapus.');
+        }
+
+        \Log::info("Memulai penghapusan $totalPeserta data peserta dan data absensi terkait");
+
+        // 1. Hapus file QR Code terlebih dahulu
+        $pesertaWithQr = Peserta::whereNotNull('qr_code_file')->get();
+        foreach ($pesertaWithQr as $peserta) {
+            $filePath = 'public/qr-codes/' . $peserta->qr_code_file;
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+                \Log::info("Deleted QR file: $filePath");
+            }
+        }
+
+        // 2. Hapus SEMUA data dari tabel absensi terlebih dahulu
+        $deletedAbsensiCount = DB::table('absensi')->delete();
+        \Log::info("Deleted $deletedAbsensiCount records from absensi table");
+
+        // 3. Sekarang hapus semua data peserta menggunakan DELETE (bukan TRUNCATE)
+        $deletedPesertaCount = DB::table('peserta')->delete();
+        \Log::info("Deleted $deletedPesertaCount records from peserta table");
+
+        DB::commit();
+
+        return redirect()->route('peserta.index')
+            ->with('success', "Semua data peserta ($deletedPesertaCount data) dan data absensi ($deletedAbsensiCount data) berhasil dihapus!");
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        
+        \Log::error('Error deleting all peserta: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return redirect()->route('peserta.index')
+            ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+    }
+}
 }

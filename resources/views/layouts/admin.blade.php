@@ -31,7 +31,7 @@
                     <div class="flex flex-col">
                         <span class="text-lg md:text-xl font-bold text-gray-800 tracking-tight 
                                      transition-colors duration-300 group-hover:text-blue-600">
-                            ABSENSI BARCODE
+                          
                         </span>
                         <span class="text-xs text-gray-500 mt-0.5 opacity-0 group-hover:opacity-100 
                                      transition-opacity duration-500">
